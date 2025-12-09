@@ -1,0 +1,1 @@
+docker run -d --name ecommerce-postgres --restart always -p 5433:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=password123 -e POSTGRES_DB=ecommerce_db postgres:latest
