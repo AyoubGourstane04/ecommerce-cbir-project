@@ -6,10 +6,10 @@ import os
 from sqlalchemy import func
 from werkzeug.utils import secure_filename
 
-from Backend.core.feature_extractor import FeatureExtractor
-from Backend.core.search_engine import SearchEngine
-from Backend.database import init_db
-from Backend.database.models import Product
+from core.feature_extractor import FeatureExtractor
+from core.search_engine import SearchEngine
+from database import init_db
+from database.models import Product
 
 app = Flask(__name__)
 CORS(app)
@@ -59,12 +59,17 @@ def search_by_image():
 
         img = Image.open(filepath)
         query_vector = fe.extract(img)
-
-        similar_paths = search_engine.search(query_vector, top_k=6)
-
+        
+        raw_paths = search_engine.search(query_vector, top_k=6)
+        
+        similar_paths = [p.replace('\\', '/') for p in raw_paths]
+        
         found_paths = Product.query.filter(Product.image_path.in_(similar_paths)).all()
+        
         products = sort_product_by_relevance(found_paths, similar_paths)
+        
         return jsonify([p.to_dict() for p in products]), 200
+    
     except Exception as e:
         print(f"Error during search: {e}")
         return jsonify({"error": str(e)}), 500
@@ -72,9 +77,12 @@ def search_by_image():
 @app.route('/api/search_text', methods=['POST'])
 def get_products_by_name():
     product_name = request.form.get('search_value')
+    
     if product_name is None or product_name == "":
         return jsonify({"error": "No product selected"}), 400
+    
     products = Product.query.filter(Product.name.ilike(f'%{product_name}%')).all()
+    
     return jsonify([p.to_dict() for p in products]), 200
 
 

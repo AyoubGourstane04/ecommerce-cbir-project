@@ -1,7 +1,18 @@
 import os
 from PIL import Image
 import numpy as np
-from Backend.core.feature_extractor import FeatureExtractor
+import sys
+
+# 1. Get the directory of the current file
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 2. Get the parent directory (one level up)
+parent_dir = os.path.dirname(current_dir)
+
+# 3. Add the parent directory to sys.path
+sys.path.append(parent_dir)
+
+from core.feature_extractor import FeatureExtractor
 
 fe = FeatureExtractor()
 
@@ -16,12 +27,13 @@ print(f"Start indexing images from {image_folder}...")
 
 for img_name in os.listdir(image_folder):
     if img_name.lower().endswith(('.jpg', '.png', '.jpeg')):
+        if img_name == 'default.png': continue
         try:
             img_path = os.path.join(image_folder, img_name)
             img = Image.open(img_path)
             feature = fe.extract(img)
             features.append(feature)
-            img_paths.append(img_path)
+            img_paths.append(os.path.join('static/images', img_name))
             print(f"Indexed: {img_name}")
         except Exception as e:
             print(f"Error processing {img_name}: {e}")
