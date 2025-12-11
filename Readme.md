@@ -1,130 +1,99 @@
-# CBIR-Based E-Commerce Platform
+# E-commerce CBIR Project
 
-A full-stack e-commerce platform integrating **Content-Based Image Retrieval (CBIR)**, allowing users to search for products simply by uploading an image. The system identifies visual features in the uploaded image and returns similar products from the database.
+### *Mini-Projet DataScience 2025–2026*
 
----
-
-## What the Platform Does
-
-Users can:
-
-* Upload or take a picture of an item
-* View visually similar products retrieved automatically
-* Browse dynamically displayed items on the homepage
-
-The backend extracts deep visual features from images, compares them with stored product vectors, and returns the closest matches that exist in the catalog.
+This repository contains a complete e-commerce web application integrating **Content-Based Image Retrieval (CBIR)**.
+Instead of searching with keywords, users can upload an image, and the system retrieves visually similar products from the database.
 
 ---
 
-## System Architecture Overview
+## Overview
 
-The project is designed around a separation of concerns:
-
-### Backend-Image (Flask)
-
-Responsible for:
-
-* Image processing
-* Feature extraction using **MobileNetV2**
-* Matching using similarity metrics (cosine and Euclidean)
-* Returning ranked product image results
-
-Pre-extracted features and corresponding image paths are stored for fast similarity search.
+The goal of this project is to improve the online shopping experience by bridging the gap between **seeing a product** and **finding it online**.
+Through deep learning and computer vision, the system analyzes an uploaded image and suggests matching products from the catalog.
 
 ---
 
-### Backend-DB (PostgreSQL Integration)
+## Key Features
 
-Responsible for:
+* **Dynamic Home Page**
+  Random products are displayed at each visit/refresh to create a discovery-like experience.
 
-* Persistent storage of product metadata
-* Product listing
-* Associating extracted images with product entities
-* Returning information-rich product objects to the frontend
+* **Visual Search Engine**
+  Users can upload an image or use their camera to search for similar items.
 
-This layer allows data consistency and future extensibility (categories, price, user preferences, etc.).
+* **Intelligent Matching System**
+  A pre-trained CNN (MobileNetV2, ResNet50, etc.) extracts feature vectors used to identify visually similar products.
 
----
+* **Responsive Design**
+  Built with React + Bootstrap to ensure a smooth UI on all devices.
 
-### Frontend (React)
+* **PostgreSQL Product Database**
+  All product data and precomputed image embeddings are stored in a PostgreSQL-powered backend.
 
-Responsible for:
-
-* Image upload UI
-* Camera access capability
-* Dynamic homepage recommendations
-* Grid-based product visualization
-* Displaying similarity scores
-
-Built with React and styled using Bootstrap and custom CSS.
+* **Separated Backend Folder**
+  Backend logic (Flask API, feature extraction, similarity search) is organized in its own directory.
 
 ---
 
-## Project Structure (High-Level)
+## CBIR Pipeline (How It Works)
 
-```
-ecommerce-cbir-project/
-├── backend-image/      # Feature extraction and similarity engine
-├── backend-db/         # PostgreSQL data backend and product services
-└── frontend/           # UI and display logic
-```
+The system follows a 4-step Content-Based Image Retrieval process:
 
-Each folder is modular and can run independently, allowing future deployment flexibility.
+### **1. Feature Extraction**
 
----
+* Each product image is converted into a **feature vector** instead of raw pixels.
+* A pre-trained CNN (MobileNetV2, ResNet50…) is used with its classification layer removed.
+* This produces a compact representation capturing shapes, textures, and colors.
 
-## Core System Workflow
+### **2. Processing the Query Image**
 
-1. User uploads or captures an image
-2. Flask backend extracts the feature vector
-3. It computes similarity against pre-indexed vectors
-4. Best matches are sent back to the frontend
-5. The frontend queries the PostgreSQL backend
-6. Product metadata is added to the results
-7. Results are displayed in a responsive grid
+When a user uploads an image:
 
-This hybrid approach allows both:
+* The backend receives and preprocesses it.
+* The CNN extracts the feature vector representing the image.
 
-✔ **deep visual similarity**, and
-✔ **structured product information**
+### **3. Similarity Matching**
 
----
+* The query vector is compared with product vectors stored in the database.
+* Metrics like **cosine similarity** or **Euclidean distance** are used.
+* Matching is performed efficiently using NumPy, scikit-learn, or Faiss.
 
-## Technology Overview
+### **4. Retrieval**
 
-### Backend-Image
-
-* Flask
-* TensorFlow/Keras (MobileNetV2)
-* NumPy
-* OpenCV & Pillow
-
-### Backend-DB
-
-* PostgreSQL
-* ORM (SQLAlchemy or equivalent)
-
-### Frontend
-
-* React
-* Axios
-* Bootstrap
-* Custom CSS components
+* Items are ranked by similarity score.
+* The most similar products are returned to the frontend.
 
 ---
 
-## Main Advantages of the Platform
+## Technologies Used
 
-* Image-based product search (no keywords needed)
-* Modular architecture
-* Real database integration instead of static files
-* Mobile-friendly UI
-* Extensible for:
+### **Frontend**
 
-  * recommendation engines
-  * multi-category catalogs
-  * user personalization
+* **React**
+* **Bootstrap**
+* Responsive UI & dynamic product grid
+
+### **Backend**
+
+* **Flask (Python)**
+* **PostgreSQL** (product storage + embeddings)
+* Dedicated `/backend` folder for API and logic
+
+### **Computer Vision & ML**
+
+* **TensorFlow / Keras** (CNN models: ResNet, MobileNet)
+* **OpenCV** (image preprocessing)
+* **NumPy** (vector computations)
+* **Scikit-learn** (similarity metrics)
 
 ---
 
-**Built to showcase practical CBIR usage in a real e-commerce context, combining AI vision, data storage, and clean UI interaction.**
+## Usage (High-Level)
+
+* Visit the home page to browse random product suggestions.
+* Upload an image or use the camera to launch a visual search.
+* The system extracts features, computes similarity, and displays the closest matches.
+
+---
+
