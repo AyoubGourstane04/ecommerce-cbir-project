@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, Col, Row, Button } from 'react-bootstrap';
+import { Link } from "react-router-dom"
 
 const ProductGrid = ({products, title}) => {
     return (
@@ -14,7 +15,7 @@ const ProductGrid = ({products, title}) => {
                             <Card.Body>
                                 <Card.Title>{product.name || `Item #${idx}`}</Card.Title>
                                 <Card.Text>{product.price || '0.00'} DH</Card.Text>
-                                <Button variant="primary">View Details</Button>
+                                <Button variant="primary" as={Link} to={`/product/${product.id}`}>View Details</Button>
                             </Card.Body>
                         </Card>
                     </Col>

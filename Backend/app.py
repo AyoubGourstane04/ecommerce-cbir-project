@@ -86,5 +86,25 @@ def get_products_by_name():
     return jsonify([p.to_dict() for p in products]), 200
 
 
+@app.route('/product/<int:id>', methods=['GET'])
+def get_product_by_id(id):
+    product = Product.query.get(id)
+    
+    if product is None:
+        return  jsonify({"error": f"No product with the id {id} found!"}), 404
+    
+    product_data = {
+            'id': product.id,
+            'name': product.name,
+            'price': product.price,
+            'category': product.category,
+            'description': product.description,
+            'image_path': product.image_path,
+            'created_at': product.created_at,
+    }
+    
+    return jsonify(product_data), 200
+    
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
